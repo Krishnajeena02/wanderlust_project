@@ -1,0 +1,62 @@
+<% layout("layouts/boilerplate")%>
+
+<div class="row ">
+    <div class="col-8 offset-2 mt-3">
+
+
+    
+    <h3>Edit listing</h3>
+    <br> <br>
+<form action="/listings/<%=listings._id%>?_method=PATCH" method="post" novalidate class="needs-validation">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" name="listing[title]" value="<%=listings.title%>" class="form-control" required>
+    <div class="valid-feedback">title looks good!</div>
+
+</div>
+<div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea name="listing[description]"  class="form-control" required><%=listings.description%></textarea>
+
+    <div class="invalid-feedback">please enter a short description</div>
+
+</div>
+
+
+<div class="mb-3">
+    <label for="image" class="form-label">Image Link</label>
+    <input type="text" name="listing[image][url]" value="<%=listings.image.url%>" class="form-control" required>
+    <div class="invalid-feedback">please enter the image url </div>
+
+</div>
+
+<div class="row">
+<div class="mb-3 col-md-4">
+    <label for="price" class="form-label"  >Price</label>
+    <input type="number" name="listing[price]" min="0" value="<%=listings.price%>" class="form-control" required>
+    <div class="invalid-feedback">price should be valid</div>
+
+</div>
+
+
+   
+<div class="mb-3 col-md-8">
+    <label for="country" class="form-label">Country</label>
+    <input type="text" name="listing[country]" value="<%=listings.country%>" class="form-control" required>
+    <div class="invalid-feedback">country should be valid</div>
+
+</div>
+
+
+<div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <input type="text" name="listing[location]" value="<%=listings.location%>" class="form-control" required>
+    <div class="invalid-feedback">location should be valid</div>
+
+</div>
+    <br><br>
+    <button class="btn btn-dark edit-btn">Edit</button>
+    <br><br>
+
+</div>
+</div>
