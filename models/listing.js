@@ -13,7 +13,7 @@ const listingschema = new schema({
 
    image: {
     filename: {
-      tye: String,
+      type: String,
       default: "filename",
     },
     url: {
@@ -25,6 +25,12 @@ const listingschema = new schema({
     price:Number,
     location:String,
     country:String,
+    reviews:[
+      {
+       type:schema.Types.ObjectId,
+       ref:"review", 
+      }
+    ],
 });
 
 const listing = mongoose.model("listing", listingschema);

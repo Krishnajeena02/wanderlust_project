@@ -8,6 +8,8 @@ const ejsmate = require("ejs-mate");
 const wrapasync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
 const{listingschema}= require("./schema.js")
+const review = require("./models/review.js");
+
 
 
 app.set("view engine", "ejs");
@@ -35,7 +37,8 @@ app.get("/", (req,res)=>{
 const validatelisting= (req,res,next)=>{
     let {error}=  listingschema.validate(req.body);
     if(error){
-        throw new ExpressError(400, error)
+        let errmsg= error.details.map((el)=>el.message).join(",");
+        throw new ExpressError(400, errmsg)
     }else{
         next();
     }
@@ -65,7 +68,7 @@ let {id} = req.params;
 //create route
 app.post("/listings",validatelisting, wrapasync(async(req,res,next)=>{
    
-   console.log(req.body)
+   console.log(req.body) 
     
         const newlisting= new listing(req.body.listing);
        
@@ -104,12 +107,27 @@ app.delete("/listings/:id",  wrapasync( async (req,res)=>{
     console.log(deleted);
 }));
 
-//
+
+// reviews 
+// post route
+
+app.post("/listings/:id/reviews", async(req,res)=>{
+let listing = await listing.findById(req.params.id);
+let newreview = new review(req.body.review);
+
+listing.reviews.push(newreview);
+await newreview.save();
+await listing.save();
+console.log("new review saved")
+res.send("new review saved")
+})
+
+
 
 app.all("*", (req,res,next)=>{
    next(new ExpressError(404, "page not found")) 
 })
-
+ 
 
 app.use((err, req,res,next)=>{
     let{statuscode=500,messege="something went wrong"}=err;
