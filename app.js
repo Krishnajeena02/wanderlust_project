@@ -1,165 +1,114 @@
-const express = require("express");
+const express = require("express") ;
 const app = express();
 const mongoose = require("mongoose");
-const listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsmate = require("ejs-mate");
-const wrapasync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
-const{listingschema,reviewschema}= require("./schema.js")
-const review = require("./models/review.js");
+const session = require("express-session");
+const flash= require("connect-flash");
+const passport = require("passport");
+const  LocalStrategy = require("passport-local")
+const user = require("./models/user.js")
 
+
+
+
+const listings = require("./routes/listing.js")
+const reviews = require("./routes/review.js")
+const users = require("./routes/user.js")
 
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsmate);
 app.use(express.static(path.join(__dirname, "public")))
 
-const mongourl =  "mongodb://127.0.0.1:27017/wanderlust";
-async function main(){
+const mongourl = "mongodb://127.0.0.1:27017/wanderlust";
+async function main() {
     await mongoose.connect(mongourl);
 }
 
-main().then((res)=>{
+main().then((res) => {
     console.log("connected to DB.")
-}).catch((err)=>{
+}).catch((err) => {
     console.log(err)
 });
 
-app.get("/", (req,res)=>{
+const sessionoption = {
+    secret:"mysecret",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+      expires:Date.now() *7 *24*60*60*1000,
+      maxAge:  7 *24*60*60*1000,
+      httpOnly:true,
+    }
+}
+app.use(session(sessionoption))
+app.use(flash())
+
+
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(user.authenticate()))
+
+passport.serializeUser(user.serializeUser());
+passport.deserializeUser(user.deserializeUser());
+
+
+
+// app.get("/signup", async (req,res)=>{
+//     const fakeuser = new user({
+//         email:"krishna@gmail.com",
+//         username:"krishna01133",
+//     })
+   
+//     let register = await user.register(fakeuser, "krishna@123")
+// res.send(register)
+// } )
+
+
+app.get("/", (req, res) => {
     res.send("hi i am krishna")
 });
 
-const validatelisting= (req,res,next)=>{
-    let {error}=  listingschema.validate(req.body);
-    if(error){
-        let errmsg= error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400, errmsg)
-    }else{
-        next();
-    }
-}
-const validatereview= (req,res,next)=>{
-    let {error}=  reviewschema.validate(req.body);
-    if(error){
-        let errmsg= error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400, errmsg)
-    }else{
-        next();
-    }
-}
-
-//index route
-app.get("/listings", wrapasync( async (req,res)=>{
- const alllistings =   await listing.find({})
-        res.render("listings/index.ejs",{alllistings});
-    
-
-}));
-
-///new route
-app.get("/listings/new",(req,res)=>{
-    res.render("listings/new.ejs");
-});
-
-// show route
-app.get("/listings/:id",wrapasync( async (req,res)=>{
-let {id} = req.params;
- const listings= await listing.findById(id).populate("reviews");
- res.render("listings/show.ejs",{listings})
-
-}));
-
-//create route
-app.post("/listings",validatelisting, wrapasync(async(req,res,next)=>{
-   
-   console.log(req.body) 
-    
-        const newlisting= new listing(req.body.listing);
-       
-        await newlisting.save();
-    
-    res.redirect("/listings");
-    } )
-);
-
-    
-
-
-//edit route
-app.get("/listings/:id/edit", wrapasync(async (req,res)=>{
-    let {id} = req.params;
- const listings= await listing.findById(id);
-    res.render("listings/edit.ejs",{listings});
-}));
-
-//update route
-app.patch("/listings/:id", wrapasync( async (req,res)=>{
-    if(!req.body.listing){
-        throw new ExpressError(400, "send valid data for listing")
-       }
-    let {id} = req.params;
-await listing.findByIdAndUpdate(id,{ ...req.body.listing});
-res.redirect(`/listings/${id}`);
-}));
-
-
-//delete ROUTE
-app.delete("/listings/:id",  wrapasync( async (req,res)=>{
-    let {id} = req.params;
-    let deleted =  await listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-    console.log(deleted);
-}));
-
-
-// reviews 
-// post route
-
-app.post("/listings/:id/reviews", validatereview, wrapasync(async (req,res)=>{
-
- 
-    let listings= await listing.findById(req.params.id);
-    
-    
-let newreview = new review(req.body.review);
-
-listings.reviews.push(newreview);
-await newreview.save();
-await listings.save();
-console.log("new review saved")
-res.redirect(`/listings/${listings._id}`)
-   
-}));
-
-//delete route
-
-app.delete("/listings/:id/reviews/:reviewId",  wrapasync(async (req,res)=>{
-    let{id,reviewId} = req.params;
-    await listing.findByIdAndUpdate(id,{$pull: {reviews:reviewId}})
-    await review.findByIdAndDelete(reviewId);
-
-    res.redirect(`/listings/${id}`)
-}))
-
-
-
-app.all("*", (req,res,next)=>{
-   next(new ExpressError(404, "page not found")) 
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success"); 
+    res.locals.error = req.flash("error"); 
+    res.locals.currUser = req.user;
+    next();
 })
- 
 
-app.use((err, req,res,next)=>{
-    let{statuscode=500,messege="something went wrong"}=err;
+app.get("/getcookie",(req,res)=>{
+    res.cookie("color", "red",{signed:true});
+    res.send("cookie")
+})
+
+
+app.use("/listings", listings);
+app.use("/listings/:id/reviews", reviews);
+app.use("/",users);
+
+
+
+
+
+
+app.all("*", (req, res, next) => {
+    next(new ExpressError(404, "page not found"))
+})
+
+
+app.use((err, req, res, next) => {
+    let { statuscode = 500, messege = "something went wrong" } = err;
     // res.status(statuscode).send(messege)
-    res.status(statuscode).render("error.ejs",{messege})
+    res.status(statuscode).render("error.ejs", { messege })
     // res.send("something went wrong check again")
 })
 
-app.listen(8080,()=>{
+app.listen(8080, () => {
     console.log("server is listening to 8080")
 })
