@@ -1,6 +1,8 @@
 // const e = require("connect-flash");
 const listing = require("./models/listing")
-const{listingschema}= require("./schema.js")
+const review = require("./models/review.js");
+
+const{listingschema,reviewschema}= require("./schema.js")
 const ExpressError = require("./utils/ExpressError.js")
 
 module.exports.isLoggedIn=(req,res,next)=>{
@@ -49,4 +51,15 @@ module.exports.validatereview= (req,res,next)=>{
     }else{
         next();
     }
+}
+
+
+module.exports.isReviewAuthor =async (req,res,next)=>{
+    let {id, reviewId} = req.params
+    let reviews  = await review.findById(reviewId);
+    if(!reviews.author._id.equals(res.locals.currUser._id)){
+        req.flash("error", "you are not the owner of this review")
+  return  res.redirect(`/listings/${id}`)
+    }
+    next()
 }

@@ -53,10 +53,30 @@
         <h4>Leave a Review</h4>
 
         <form action="/listings/<%= listings._id %>/reviews" method="POST" novalidate class="needs-validation">
-            <div class="mb-3 mt-3">
+            <!-- <div class="mb-3 mt-3">
                 <label class="form-label" for="rating">Rating</label>
                 <input class="form-range" type="range" min="1" max="5" id="rating" name="review[rating]">
             </div>
+            <div class="mb-3 mt-3"> -->
+
+
+            <div class="mb-3 mt-3">
+              <h5>  <label class="form-label" for="rating">Rating:</label></h5>
+
+                <fieldset class="starability-heartbeat">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+              </div>
             <div class="mb-3 mt-3">
                 <label class="form-label" for="comment">Comments</label>
                 <textarea id="comment" name="review[comment]" cols="30" rows="10" class="form-control"
@@ -75,21 +95,26 @@
                 <div class="card col-5 ms-4 mb-4">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <%= review.username %>krishna
+                            @<%= review.author.username %>
+                                <p class="starability-result card-text" data-rating="<%= review.rating %>"> 
+                            </p>
                         </h5> <!-- Dynamically show reviewer's name -->
                         <p class="card-text">
                             <%= review.comment %>
                         </p>
-                        <p class="card-text">
-                            <%= review.rating %> stars
-                        </p>
+                        
                         <form class="mb-2" method="post"
                             action="/listings/<%= listings._id %>/reviews/<%= review._id %>?_method=DELETE">
                             <!-- Corrected 'listings._id' -->
+                             <% if (currUser && review.author._id.equals(currUser._id)) { %>
+                              
+                            
                             <button class="btn btn-sm btn-danger">Delete</button>
+
+                            <%}%>
                         </form>
-                        <% } %>
                     </div>
                 </div>
+                <% } %>
         </div>
     </div>
