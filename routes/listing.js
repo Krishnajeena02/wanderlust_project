@@ -12,7 +12,7 @@ router.route("/")
 .get( wrapasync( listingController.index ))
 // .post(isLoggedIn,validatelisting, wrapasync(listingController.createListing));
 
-router.post("/", upload.single('listing[image]'), function (req, res, next) {
+router.post( upload.single('listing[image]'), function (req, res, next) {
    // if (!req.file) {
    //    return res.status(400).send('No file uploaded.');
    //  }
