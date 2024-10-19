@@ -1,3 +1,9 @@
+if(process.env.NODE_ENV != "production"){
+
+    require("dotenv").config()
+}
+
+
 const express = require("express") ;
 const app = express();
 const mongoose = require("mongoose");
@@ -71,9 +77,9 @@ passport.deserializeUser(user.deserializeUser());
 // } )
 
 
-app.get("/", (req, res) => {
-    res.send("hi i am krishna")
-});
+// app.get("/", (req, res) => {
+//     res.send("hi i am krishna")
+// });
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success"); 
@@ -104,6 +110,7 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let { statuscode = 500, messege = "something went wrong" } = err;
+    // console.error(err)
     // res.status(statuscode).send(messege)
     res.status(statuscode).render("error.ejs", { messege })
     // res.send("something went wrong check again")

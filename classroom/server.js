@@ -8,13 +8,13 @@ const path= require("path")
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-const sessionoption = {
+const sessionOption = {
     secret:"mysupersecret",
     resave:false,
     saveUninitialized:true,
 }
 
-app.use(session(sessionoption))
+app.use(session(sessionOption))
 app.use(flash());
 // app.get("/test", (rq,res)=>{
 //     res.send("test succesful")

@@ -22,7 +22,7 @@ const initdb = async ()=>{
     initdata.data = initdata.data.map((obj)=>({
         
         ...obj,
-        owner:"6
+        owner:""
     }))
     await listing.insertMany(initdata.data);
     console.log("data was init")
