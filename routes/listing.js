@@ -25,11 +25,10 @@ router.route("/:id")
 .get(wrapasync(listingController.showListing))
 .patch(isLoggedIn,
    isOwner,
-   validatelisting, 
    upload.single("listing[image]"),
+   validatelisting, 
    wrapasync(listingController.updateListing))
 .delete(isLoggedIn,isOwner,  wrapasync( listingController.deleteListing));
-
 //edit route
 router.get("/:id/edit",isLoggedIn,isOwner, wrapasync(listingController.editListing));
 
