@@ -7,7 +7,7 @@
     
     <h3>Edit listing</h3>
     <br> <br>
-<form action="/listings/<%=listings._id%>?_method=PATCH" method="post" enctype="multipart/form-data" novalidate class="needs-validation">
+<form action="/listings/<%=listings._id%>?_method=PATCH" method="post"  novalidate class="needs-validation" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input type="text" name="listing[title]" value="<%=listings.title%>" class="form-control" required>
@@ -22,9 +22,9 @@
 
 </div>
 
-<div class="mb-3">
+<!-- <div class="mb-3">
     <img src="<%=originalImage%>" alt="">   
-</div>
+</div> -->
 
 <div class="mb-3">
     <label for="image" class="form-label">upload new image</label>

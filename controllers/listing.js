@@ -1,3 +1,4 @@
+
 const listing = require("../models/listing.js");
 
 
@@ -51,11 +52,11 @@ module.exports.editListing=async (req,res)=>{
 module.exports.updateListing= async (req,res)=>{
     let {id} = req.params;
  
-    let listing=  await listing.findByIdAndUpdate(id,{ ...req.body.listing});
+    let Listing=  await listing.findByIdAndUpdate(id,{ ...req.body.listing});
   
     if(typeof req.file !=="undefined"){
-    listing.image=  {url: req.file.path, filename: req.file.filename};
-    await listing.save();
+    Listing.image=  {url: req.file.path, filename: req.file.filename};
+    await Listing.save();
   }
     
     req.flash("success", "listing updated")
