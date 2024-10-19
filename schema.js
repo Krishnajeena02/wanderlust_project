@@ -11,8 +11,8 @@ module.exports.listingschema= Joi.object({
         price:Joi.string().required(),
         image:Joi.object({
             filename:Joi.string().optional(),
-            url: Joi.string().allow("",null).required(),
-        }).required()
+            url: Joi.string().allow("",null),
+        })
 
     }).required()
 
@@ -24,5 +24,4 @@ module.exports.reviewschema = Joi.object({
         comment: Joi.string().required(),
     }).required()
 })
-
 

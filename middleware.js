@@ -34,7 +34,7 @@ module.exports.isOwner =async (req,res,next)=>{
 
 module.exports.validatelisting= (req,res,next)=>{
     console.log("validation:", req.body);
-    let {error} = listingschema.validate(req.body.listing);
+    let {error} = listingschema.validate(req.body);
     if(error){
         let errmsg= error.details.map((el)=>el.message).join(",");
         throw new ExpressError(400, errmsg)
@@ -63,4 +63,4 @@ module.exports.isReviewAuthor =async (req,res,next)=>{
   return  res.redirect(`/listings/${id}`)
     }
     next()
-}
+};

@@ -29,6 +29,7 @@ router.route("/:id")
    validatelisting, 
    wrapasync(listingController.updateListing))
 .delete(isLoggedIn,isOwner,  wrapasync( listingController.deleteListing));
+
 //edit route
 router.get("/:id/edit",isLoggedIn,isOwner, wrapasync(listingController.editListing));
 
