@@ -33,7 +33,7 @@ module.exports.isOwner =async (req,res,next)=>{
 }
 
 module.exports.validatelisting= (req,res,next)=>{
-    console.log("validation:", req.body);
+    // console.log("validation:", req.body);
     let {error} = listingschema.validate(req.body);
     if(error){
         let errmsg= error.details.map((el)=>el.message).join(",");

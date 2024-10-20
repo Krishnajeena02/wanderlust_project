@@ -25,13 +25,12 @@ module.exports.showListing=async (req,res)=>{
 
 module.exports.createListing = async(req,res,next) => {
 
-  let coordinate= await  geocodingClient().forwardGeocode({
+  let response= await  geocodingClient.forwardGeocode({
         query:req.body.listing.location,
         limit: 1,
       })
         .send();
-        console.log(coordinate.body.features[0].geometry.coordinates)
-        res.send("done")
+        // res.send(coordinates);
         
     
     // console.log("create listing body:",req.body);
@@ -40,7 +39,9 @@ module.exports.createListing = async(req,res,next) => {
     const newlisting = new listing(req.body.listing);
     newlisting.image = {url: req.file.path, filename: req.file.filename};
     newlisting.owner = req.user._id;
-    await newlisting.save();
+    newlisting.geometry=response.body.features[0].geometry;
+  let save=  await newlisting.save();
+  console.log(save)
     req.flash("success", "new listing created")
     res.redirect("/listings");
 } 
