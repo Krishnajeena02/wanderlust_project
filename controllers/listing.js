@@ -60,12 +60,19 @@ module.exports.editListing=async (req,res)=>{
 }
 
 module.exports.updateListing= async (req,res)=>{
+  let response= await  geocodingClient.forwardGeocode({
+    query:req.body.listing.location,
+    limit: 1,
+  })
+    .send();
     let {id} = req.params;
  
     let Listing=  await listing.findByIdAndUpdate(id,{ ...req.body.listing});
   
     if(typeof req.file !=="undefined"){
     Listing.image=  {url: req.file.path, filename: req.file.filename};
+    Listing.geometry=response.body.features[0].geometry;
+
     await Listing.save();
   }
     

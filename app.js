@@ -12,6 +12,7 @@ const methodOverride = require("method-override");
 const ejsmate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js")
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash= require("connect-flash");
 const passport = require("passport");
 const  LocalStrategy = require("passport-local")
@@ -32,10 +33,12 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsmate);
 app.use(express.static(path.join(__dirname, "public")))
 
-const mongourl = "mongodb://127.0.0.1:27017/wanderlust";
+// const mongourl = "mongodb://127.0.0.1:27017/wanderlust";
+const  dbUrl=process.env.ATLASDB_URL;
 async function main() {
-    await mongoose.connect(mongourl);
+    await mongoose.connect(dbUrl);
 }
+console.log("atlas_url=>",dbUrl)
 
 main().then((res) => {
     console.log("connected to DB.")
@@ -43,8 +46,24 @@ main().then((res) => {
     console.log(err)
 });
 
+
+
+const store =  MongoStore.create({
+    mongoUrl:dbUrl,
+    crypto:{
+        secret:process.env.SECRET
+
+    },
+    touchAfter:24*3600,
+ })
+
+ store.on("error",()=>{
+    console.log("ERROR in MONGO SESSION STORE", err);
+ })
+
 const sessionoption = {
-    secret:"mysecret",
+    store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
@@ -53,6 +72,10 @@ const sessionoption = {
       httpOnly:true,
     }
 }
+
+
+
+
 app.use(session(sessionoption))
 app.use(flash())
 
@@ -110,7 +133,7 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let { statuscode = 500, messege = "something went wrong" } = err;
-    // console.error(err)
+    console.error(err)
     // res.status(statuscode).send(messege)
     res.status(statuscode).render("error.ejs", { messege })
     // res.send("something went wrong check again")

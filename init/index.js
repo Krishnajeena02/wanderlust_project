@@ -5,7 +5,8 @@ const listing = require("../models/listing.js");
 
 
 
-const mongourl =  "mongodb://127.0.0.1:27017/wanderlust";
+// const mongourl =  "mongodb://127.0.0.1:27017/wanderlust";
+const  dbUrl=process.env.ATLASDB_URL;
 
 
 main().then((res)=>{
@@ -14,7 +15,7 @@ main().then((res)=>{
     console.log(err)
 });
 async function main(){
-    await mongoose.connect(mongourl);
+    await mongoose.connect(dbUrl);
 };
 
 const initdb = async ()=>{
@@ -22,7 +23,7 @@ const initdb = async ()=>{
     initdata.data = initdata.data.map((obj)=>({
         
         ...obj,
-        owner:""
+        owner:"670a1e78be118fa34bb39491"
     }))
     await listing.insertMany(initdata.data);
     console.log("data was init")
