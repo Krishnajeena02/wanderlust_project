@@ -1,1 +1,1 @@
-Live: https://wanderlust-project-nexe.onrender.com
+Live: https://wanderlust-project-nexe.onrender.com/listings
