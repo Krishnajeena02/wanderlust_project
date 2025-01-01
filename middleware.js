@@ -11,7 +11,7 @@ module.exports.isLoggedIn=(req,res,next)=>{
         req.session.redirectUrl= req.originalUrl;
         req.flash("error", "you must be logged in to create or update the listings");
    return res.redirect("/login");
-    }
+    
     next();
 }
 
