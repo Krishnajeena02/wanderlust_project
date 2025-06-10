@@ -46,7 +46,7 @@ module.exports.renderLoginForm=(req,res)=>{
     }
 
 
-    module.exports.logout=(req,res,next)=>{
+    module.exports.logout=(req, res,next)=>{
         req.logout((err)=>{
             if(err){
                return next(err);

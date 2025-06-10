@@ -20,6 +20,7 @@ router.route("/")
 );
 //new route
 router.get("/new",isLoggedIn, listingController.renderNewForm);
+router.get("/category/:category", listingController.filterByCategory);
 
 router.route("/:id")
 .get(wrapasync(listingController.showListing))

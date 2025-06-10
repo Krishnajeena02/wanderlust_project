@@ -26,7 +26,6 @@ const initdb = async ()=>{
         owner:"670a1e78be118fa34bb39491"
     }))
     await listing.insertMany(initdata.data);
-    console.log("data was init")
 }
 
 initdb();

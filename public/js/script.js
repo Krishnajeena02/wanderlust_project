@@ -1,3 +1,5 @@
+
+
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (() => {
     'use strict'
@@ -17,3 +19,14 @@
       }, false)
     })
   })();
+
+  
+ gsap.to("#rotate", {
+      rotation: 360,
+      duration: 2,
+      repeat: -1,
+      ease: "none"
+    });
+
+
+

@@ -12,7 +12,9 @@ min-height: 100vh;
   }
 .navbar{
     height: 5rem;
-    background-color: #ffff;
+    /* background-color: #ffff; */
+    backdrop-filter: blur(15px);
+    /* border: none !important; */
 }
 
 .fa-compass{
@@ -81,7 +83,15 @@ color: #222222;
   }
   .card-body{
     padding: 0 !important;
+    display: flex;
+    justify-content: center;
 
+  }
+  
+  .animation:hover{
+    transition:  0.3s ease-in-out;
+    transform: scale(0.89);
+    
   }
 
   .card-text p{
@@ -94,7 +104,11 @@ color: #222222;
   }
 
   /* card effect */
-
+  
+.filter a{
+text-decoration: none;
+color: #222222;
+}
 
   .card-img-overlay{
     opacity: 0;
@@ -129,8 +143,14 @@ color: #222222;
   }
 
   .show-card{
+   
     padding-left:0 ;
     padding-right:0 ;
+  }
+  .card-body{
+     display: flex;
+    flex-direction: column;
+    
   }
 
   #map{

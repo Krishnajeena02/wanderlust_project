@@ -5,12 +5,29 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index=async (req,res)=>{
     const alllistings = await listing.find({})
-    res.render("listings/index.ejs",{alllistings});
+  res.render("listings/index.ejs", { alllistings, page: "index" });
 }
 
 module.exports.renderNewForm =(req,res)=>{
   res.render("listings/new.ejs");
 }
+module.exports.filterByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+        const listings = await listing.find({ category });
+        if (!listings || listings.length === 0) {
+            req.flash("error", `No listings found in category: ${category}`);
+            return res.redirect("/listings");
+        }
+        res.render("listings", { alllistings: listings });  //here i removed slash
+    } catch (e) {
+        console.error("Error while filtering by category:", e);
+        res.status(500).send("Server Error");
+        res.redirect("/listings");
+
+    }
+};
+
 
 
 module.exports.showListing=async (req,res)=>{
@@ -33,15 +50,12 @@ module.exports.createListing = async(req,res,next) => {
         // res.send(coordinates);
         
     
-    // console.log("create listing body:",req.body);
-    console.log("create listing body:",req.file); 
            
     const newlisting = new listing(req.body.listing);
     newlisting.image = {url: req.file.path, filename: req.file.filename};
     newlisting.owner = req.user._id;
     newlisting.geometry=response.body.features[0].geometry;
   let save=  await newlisting.save();
-  console.log(save)
     req.flash("success", "new listing created")
     res.redirect("/listings");
 } 
@@ -87,5 +101,4 @@ module.exports.deleteListing=async (req,res)=>{
     req.flash("success", " listing deleted")
     
     res.redirect("/listings");
-    console.log(deleted);
 }

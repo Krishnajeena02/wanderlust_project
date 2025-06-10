@@ -24,6 +24,7 @@ const user = require("./models/user.js")
 const listings = require("./routes/listing.js")
 const reviews = require("./routes/review.js")
 const users = require("./routes/user.js")
+// const category = require("./routes/listing.js")
 
 
 app.set("view engine", "ejs");
@@ -38,7 +39,6 @@ const  dbUrl=process.env.ATLASDB_URL;
 async function main() {
     await mongoose.connect(dbUrl);
 }
-console.log("atlas_url=>",dbUrl)
 
 main().then((res) => {
     console.log("connected to DB.")
@@ -89,20 +89,7 @@ passport.deserializeUser(user.deserializeUser());
 
 
 
-// app.get("/signup", async (req,res)=>{
-//     const fakeuser = new user({
-//         email:"krishna@gmail.com",
-//         username:"krishna01133",
-//     })
-   
-//     let register = await user.register(fakeuser, "krishna@123")
-// res.send(register)
-// } )
 
-
-// app.get("/", (req, res) => {
-//     res.send("hi i am krishna")
-// });
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success"); 
@@ -119,6 +106,8 @@ app.get("/getcookie",(req,res)=>{
 
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
+app.use("/listings/catogery",listings);
+
 app.use("/",users);
 
 
@@ -140,5 +129,4 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(8080, () => {
-    console.log("server is listening to 8080")
 })
