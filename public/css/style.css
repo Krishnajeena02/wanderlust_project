@@ -1,7 +1,14 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 body{
   font-family: "Plus Jakarta Sans", sans-serif !important;
     display: flex;
 flex-direction: column;
+
 min-height: 100vh;
 
 
@@ -12,7 +19,9 @@ min-height: 100vh;
   }
 .navbar{
     height: 5rem;
-    background-color: #ffff;
+    /* background-color:rgb(160, 191, 203); */
+    backdrop-filter: blur(15px);
+    border: none !important;
 }
 
 .fa-compass{
@@ -21,7 +30,10 @@ min-height: 100vh;
 }
 
 .nav-link {
-    color: #222222 !important;
+    color: #ffffff !important;
+    background-color: #fe424d !important;
+    margin-left: 20px;
+    border-radius: 10px;
 }
 
   /* footer  */
@@ -70,7 +82,12 @@ color: #222222;
   .listing-card{
     border: none !important;
     margin-bottom:2rem ;
-   
+    
+    transition: transform 0.3s ease;
+  }
+  .listing-card:hover{
+    transform: skew(-5deg ,-5deg);
+    
   }
   .card-img-top{
     border-radius: 1rem !important;
@@ -101,8 +118,9 @@ color: #222222;
   }
 
   .card-img-overlay:hover{
-    opacity: 0.2;
+    /* opacity: 0.2; */
     background-color: white;
+    
   }
 
   .add-btn{

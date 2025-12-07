@@ -1,32 +1,26 @@
-const mongoose = require("mongoose");
-const initdata = require("./data.js");
-const listing = require("../models/listing.js");
+import 'dotenv/config';
+import mongoose from "mongoose";
+import initdata from "./data.js";
+import listing from "../models/listing.js";
 
+const dbUrl = process.env.ATLASDB_URL;
 
+async function main() {
+  await mongoose.connect(dbUrl);
+  console.log("Connected to DB.");
+}
 
+main().catch(console.error);
 
-// const mongourl =  "mongodb://127.0.0.1:27017/wanderlust";
-const  dbUrl=process.env.ATLASDB_URL;
+async function initdb() {
+  const dataWithGeometry = initdata.data.map(obj => ({
+    ...obj,
+    owner: "670a1e78be118fa34bb39491",
+    geometry: obj.geometry || { type: "Point", coordinates: [0, 0] }
+  }));
 
-
-main().then((res)=>{
-    console.log("connected to DB.")
-}).catch((err)=>{
-    console.log(err)
-});
-async function main(){
-    await mongoose.connect(dbUrl);
-};
-
-const initdb = async ()=>{
-    await listing.deleteMany({});
-    initdata.data = initdata.data.map((obj)=>({
-        
-        ...obj,
-        owner:"670a1e78be118fa34bb39491"
-    }))
-    await listing.insertMany(initdata.data);
-    console.log("data was init")
+  await listing.insertMany(dataWithGeometry);
+  console.log("Data initialized successfully!");
 }
 
 initdb();

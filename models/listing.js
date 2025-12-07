@@ -5,6 +5,9 @@ const review = require("./review.js")
 const listingschema = new schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
+    category:{
+        type:String
+    },
     image: {
         filename:  String,
       url:    String,   

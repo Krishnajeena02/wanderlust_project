@@ -12,6 +12,26 @@ module.exports.renderNewForm = (req, res) => {
     res.render("listings/new.ejs");
 };
 
+
+module.exports.filterByCategory = async (req, res) => {
+    const { category } = req.params;
+
+    try {
+        const listings = await Listing.find({ category: category });
+
+        if (!listings || listings.length === 0) {
+            req.flash("error", `No listings found in category: ${category}`);
+            return res.redirect("/listings");
+        }
+
+        res.render("listings/index.ejs", { alllistings: listings });
+    } catch (err) {
+        console.error("Error while filtering by category:", err);
+        req.flash("error", "Something went wrong while filtering listings.");
+        res.redirect("/listings");
+    }
+};
+
 module.exports.showListing = async (req, res) => {
     let { id } = req.params;
     const listings = await Listing.findById(id)
@@ -25,6 +45,8 @@ module.exports.showListing = async (req, res) => {
 
     res.render("listings/show.ejs", { listings });
 };
+
+
 
 module.exports.createListing = async (req, res, next) => {
     if (!req.user) {

@@ -1,26 +1,27 @@
 // const e = require("connect-flash");
-const listing = require("./models/listing")
+const listing = require("./models/listing");
 const review = require("./models/review.js");
 
 const{listingschema,reviewschema}= require("./schema.js")
 const ExpressError = require("./utils/ExpressError.js")
 
-module.exports.isLoggedIn=(req,res,next)=>{
-    if(!req.isAuthenticated()){
-        //redirectUrl
-        req.session.redirectUrl= req.originalUrl;
-        req.flash("error", "you must be logged in to create or update the listings");
-   return res.redirect("/login");
-    
-    next();
-}
+module.exports.isLoggedIn = (req, res, next) => {
+  console.log("Checking login...", req.isAuthenticated());
+  if (!req.isAuthenticated()) {
+    req.session.redirectUrl = req.originalUrl; // Save original URL
+    req.flash("error", "You must be logged in to do that");
+    return res.redirect("/login");
+  }
+  next();
+};
 
-module.exports.savedRedirect = (req,res,next)=>{
-    if(req.session.redirectUrl){
-      res.locals.redirectUrl=req.session.redirectUrl  
+
+module.exports.savedRedirect = (req, res, next) => {
+    if (req.session.redirectUrl) {
+        res.locals.redirectUrl = req.session.redirectUrl;
     }
     next();
-}
+};
 
 module.exports.isOwner =async (req,res,next)=>{
     let {id} = req.params

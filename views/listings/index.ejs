@@ -5,6 +5,9 @@
     <!-- <h3>all listing</h3> -->
 
     <style>
+      body{
+        /* background-color: black; */
+      }
       #filters{
         display: flex;
         flex-wrap:wrap ;
@@ -23,7 +26,14 @@
       }
 
       .filter p{
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        color:black
+
+      }
+
+      .filter a{
+        text-decoration: none;
+
       }
 
       .tax-info{
@@ -31,59 +41,68 @@
       }
 
       .tax-switch{
-        border: 1px solid black;
+        /* border: 1px solid black; */
         border-radius: 1rem;
-        height: 3.5rem;
+        color: #fff;
+        height: 3rem;
         padding: 1rem;
-        margin-left: 10rem;
+        margin-left: 5rem;
         display: flex;
         align-items: center;
+        background-color: #f44b59;
       }
     </style>
+
      <div id="filters">
       <div class="filter">
        <div><i class="fa-solid fa-fire"></i></div> 
-       <p>Trending</p> 
+      <a href="/listings/Trending"> <p>Trending</p> </a>
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-bed"></i></div> 
-       <p>Rooms</p> 
+       <a href="/listings/Rooms"> <p>Rooms</p> </a> 
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-city"></i></div> 
-       <p>Iconic cities</p> 
+       <a href="/listings/Iconic cities"> <p>Iconic cities</p>  </a> 
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-mountain"></i></div> 
-       <p>Mountains</p> 
+       <a href="/listings/Mountains">  <p>Mountains</p>   </a> 
+      
 
       </div>
       <div class="filter">
        <div><i class="fa-brands fa-fort-awesome"></i></div> 
-       <p>Castles</p> 
+       <a href="/listings/Castles">   <p>Castles</p>   </a> 
+     
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-person-swimming"></i></div> 
-       <p>Amezing Pool</p> 
+       <a href="/listings/Amezing Pool">     <p>Amezing Pool</p>    </a> 
+     
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-campground"></i></div> 
-       <p>Camping</p> 
+       <a href="/listings/Camping">    <p>Camping</p>   </a> 
+      
 
       </div>
       <div class="filter">
        <div><i class="fa-solid fa-cow"></i></div> 
-       <p>Farms</p> 
+       <a href="/listings/Farms">      <p>Farms</p>   </a> 
+    
 
       </div>
       <div class="filter">
        <div><i class="fa-regular fa-snowflake"></i></div> 
-       <p>Arctic</p> 
+       <a href="/listings/Arctic">    <p>Arctic</p>    </a> 
+      
 
       </div>
       <div class="tax-switch">
@@ -93,9 +112,9 @@
         </div>
       </div>
      </div>
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-4">
-        <% for(let listing of alllistings){ %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
+     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-4">
+       <% for(let listing of alllistings){ %>
+        <a href="/listings/<%=listing._id%>" class="listing-link">
    
             <div class="card  col listing-card" >
                 <img src="<%= listing.image.url %>" class="card-img-top" style="height: 20rem;" alt="...">
@@ -103,33 +122,49 @@
                 <div class="card-body">
                   <p class="card-text">
                     <%= listing.title%> <br/>
-                    &#8377; <%=listing.price.toLocaleString("en-in")%> /night
-                
-                <i class="tax-info">&nbsp; &nbsp;+18% GST</i>
+                    ₹ <span class="price" data-price="<%= listing.price %>">
+                      <%= listing.price.toLocaleString("en-in") %>
+                    </span> /night
+                <i class="tax-info">&nbsp; &nbsp; 18% GST</i>
                   </p>
                 </div>
               </div>
               <% }%>
             </a>
-    </div>
+            </div>
     
 
     <script>
-      let taxSwitch= document.getElementById("flexSwitchCheckDefault")   
-      
-      taxSwitch.addEventListener("click",()=>{
-        let  taxInfo = document.getElementsByClassName("tax-info")
+     
 
+        
+  const taxToggle = document.getElementById("flexSwitchCheckDefault");
 
-        for(info of taxInfo){
-          if(info.style.display !="inline"){
+  taxToggle.addEventListener("change", () => {
+    const priceSpans = document.querySelectorAll(".price");
+    const taxInfos = document.querySelectorAll(".tax-info");
 
-            info.style.display="inline";
-          } else{
-            info.style.display="none"
-          }
-        }
-      })
+    priceSpans.forEach((span, index) => {
+      const basePrice = parseFloat(span.dataset.price);
+      const finalPrice = taxToggle.checked
+        ? Math.round(basePrice * 1.18)
+        : basePrice;
+
+      // Update displayed price
+      span.innerText = finalPrice.toLocaleString("en-IN");
+
+     // Toggle "+18% GST" text
+if (taxToggle.checked) {
+  taxInfos[index].classList.remove("d-none");
+  taxInfos[index].classList.add("d-inline");
+} else {
+  taxInfos[index].classList.remove("d-inline");
+  taxInfos[index].classList.add("d-none");
+}
+
+    });
+  });
+
       
       </script>
 
